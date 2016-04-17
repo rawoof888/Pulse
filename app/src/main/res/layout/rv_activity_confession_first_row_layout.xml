@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:id="@+id/confession"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="80dp"
+            android:layout_gravity="center_horizontal"
+            android:gravity="left"
+            android:textColor="@color/black"
+            android:paddingLeft="@dimen/pad_5dp"
+            android:paddingRight="@dimen/pad_5dp"
+            android:paddingTop="@dimen/pad_10dp"
+            android:text="Large Text" />
+        <EditText
+            android:id="@+id/et_confession"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="left"
+            android:visibility="gone"
+            android:text="Large Text" />
+
+        <LinearLayout
+            android:id="@+id/ll_hr"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+
+                <Button
+                    android:id="@+id/btn_edit_confession"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
+                    android:background="#ffffff"
+                    android:text="EDIT"
+                    android:textColor="#ff0101" />
+                <Button
+                    android:id="@+id/btn_delete_confession"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
+                    android:layout_toRightOf="@+id/btn_edit_confession"
+                    android:layout_marginRight="3dp"
+                    android:background="#ffffff"
+                    android:text="DELETE"
+                    android:textColor="#ff0101" />
+                <Button
+                    android:id="@+id/btn_update"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Update"
+                    android:visibility="gone"
+                    android:textColor="#00ff15"
+                    android:background="?attr/selectableItemBackground"/>
+                <Button
+                    android:id="@+id/btn_discard"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Discard"
+                    android:layout_toRightOf="@+id/btn_update"
+                    android:visibility="gone"
+                    android:textColor="#ff0000"
+                    android:background="?attr/selectableItemBackground" />
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        android:id="@+id/objID"
+                        android:layout_alignParentRight="true" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        android:id="@+id/tv_author"
+                        android:layout_alignParentRight="true" />
+
+
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <View
+            android:id="@+id/blackview"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#000000">
+
+        </View>
+
+
+
+    </LinearLayout>
+
+
+
+</LinearLayout>

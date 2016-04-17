@@ -1,0 +1,37 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.hive3.pulse.ActivityMain">
+
+    <item
+        android:id="@+id/action_refresh"
+        app:showAsAction="ifRoom"
+        android:title="Refresh"
+        android:icon="@android:drawable/ic_menu_rotate"/>
+
+    <item
+        android:id="@+id/chat"
+        android:orderInCategory="100"
+        android:title="@string/action_chat"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/confession"
+        android:orderInCategory="100"
+        android:title="@string/action_confession"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/my_confession"
+        android:orderInCategory="100"
+        android:title="@string/action_my_confession"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/logout"
+        android:orderInCategory="100"
+        android:title="@string/action_logout"
+        app:showAsAction="never" />
+
+
+
+
+</menu>

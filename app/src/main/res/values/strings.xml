@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Pulse</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_logout">Logout</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+
+
+    <string name="err_msg_email">Invalid EmailId - Please enter your university email id youremail@srmuniv.edu.in</string>
+    <string name="err_msg_password">Enter your Password</string>
+
+    <string name="hello_world">Hello World</string>
+    <string name="action_chat">Chat</string>
+    <string name="action_confession">confessions</string>
+    <string name="action_my_confession">My confessions</string>
+
+</resources>

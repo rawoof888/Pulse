@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <menu xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:context="com.hive3.pulse.ActivityMain">
+
+        <item
+            android:id="@+id/chat"
+            android:orderInCategory="100"
+            android:title="@string/action_chat"
+            app:showAsAction="never" />
+
+        <item
+            android:id="@+id/confession"
+            android:orderInCategory="100"
+            android:title="@string/action_confession"
+            app:showAsAction="never" />
+
+    </menu>
+
+</menu>
