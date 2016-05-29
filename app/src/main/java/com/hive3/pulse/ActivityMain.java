@@ -18,6 +18,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,8 +38,12 @@ import com.parse.SaveCallback;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -82,6 +87,7 @@ public class ActivityMain extends AppCompatActivity {
 
     public static ArrayList<String> studentReport = new ArrayList<>();
     public static ArrayList<String> studentReportData = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -277,7 +283,7 @@ public class ActivityMain extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "Attendance";
+                    return "Subjects";
                 case 1:
                     return "Confess";
 
@@ -484,6 +490,7 @@ public class ActivityMain extends AppCompatActivity {
                         for (Element col : cols) {
                             lists[i].add(col.text());
                         }
+                        Log.e("update",lists[i].toString());
                     }
 
                     courseCodes.clear();
@@ -494,7 +501,7 @@ public class ActivityMain extends AppCompatActivity {
 
                         courseCodes.add(lists[i].get(0).toString());
                         courseTitles.add(lists[i].get(1).toString());
-                        coursePercentages.add(lists[i].get(10).toString());
+                        coursePercentages.add(lists[i].get(8).toString());
 
                     }
 
@@ -506,33 +513,51 @@ public class ActivityMain extends AppCompatActivity {
                     Element sd_table2 = data.select("table").get(2);
                     Elements table2_row = sd_table2.select("tr");
 
-                    for (int i = 1; i < 2; i++) {
-                        Element row = table2_row.get(i);
-                        Elements score_table = row.select("table");
-                        Elements score_table_row = score_table.select("tr");
-                        Elements score_table_col = score_table_row.select("td");
+                    ArrayList[] courseResultsId = new ArrayList[NO_OF_COURSES];
+                    ArrayList[] courseResultsInfo = new ArrayList[NO_OF_COURSES];
 
+                    try {
 
-                        for (Element element : score_table_col) {
-                            lists[0].add(element.select("strong").text());
+                        for (int i = 1; i < table1_row.size(); i++) {
+                            courseResultsId[i-1] = new ArrayList<String>();
+                            Elements tables = sd_table2.select("table[border=1]");
+                            Element table = tables.get(i);
+                            Elements results = table.select("tbody").select("tr").select("td");
+                            for (Element element : results) {
+                                Log.e("update65",element.select("strong").text());
+                                courseResultsId[i-1].add(element.select("strong").text());
+                            }
 
-                        }
-
-                    }
-
-
-                    for (int i = 1; i < table1_row.size(); i++) {
-                        Element t2_row = sd_table2.select("tr:not(:has(table))").get(i);
-                        Elements cols = t2_row.select("td");
-
-                        for (Element col : cols) {
-                            col.select("strong").remove();
-
-                            lists[i].add(col.text().replace("\u00a0", "").trim().replace("&nbsp",""));
+                            //Log.e("courseResultsId",courseResultsId[i-1].toString());
 
                         }
 
+                        for (int i = 1; i < table1_row.size(); i++) {
+                            Log.e("update",String.valueOf(i));
+                            courseResultsInfo[i-1] = new ArrayList<>();
+                            Element t2_row = sd_table2.select("tr:not(:has(table))").get(i);
+                            Elements cols = t2_row.select("td");
+
+                            for (Element col : cols) {
+                                col.select("strong").remove();
+
+                                courseResultsInfo[i-1].add(col.text().replace("\u00a0", "").trim().replace("&nbsp",""));
+
+                            }
+                            //Log.e("courseResultsInfo",courseResultsInfo[i-1].toString());
+
+                        }
+
+                    }catch (Exception e){
+                        e.printStackTrace();
+                        Toast.makeText(MyApplication.getAppContext(),"Results can't be parsed at this moment",Toast.LENGTH_LONG).show();
                     }
+
+
+                    Log.e("courseResultsId", Arrays.toString(courseResultsId));
+                    Log.e("courseResultsInfo", Arrays.toString(courseResultsInfo));
+
+
 
 
                     //----- TABLE2 ENDS----------------------------//
@@ -554,15 +579,37 @@ public class ActivityMain extends AppCompatActivity {
                         COURSES++;
                     }
 
+                    //-----put results Id and info in tinyData-----//
+                    for (int i = 0; i < NO_OF_COURSES; i++) {
+                        tinyDB.remove("courseResultsId" + Integer.toString(i));
+                        tinyDB.remove("courseResultsInfo"+Integer.toString(i));
+                    }
+
+                    int RESULTS_ID = 0; //ct1,ct2,st,mt,qt
+                    for (ArrayList<String> list : courseResultsId) {
+                        tinyDB.putListString("courseResultsId" + RESULTS_ID, list);
+                        Log.e("fail1", String.valueOf(tinyDB.getListString("courseResultsId" + RESULTS_ID)));
+                        RESULTS_ID++;
+                    }
+
+                    int RESULTS_INFO = 0; //marks ct1,ct2,st,mt,qt
+                    for (ArrayList<String> list : courseResultsInfo) {
+                        tinyDB.putListString("courseResultsInfo" + RESULTS_INFO, list);
+                        Log.e("fail1", String.valueOf(tinyDB.getListString("courseResultsInfo" + RESULTS_INFO)));
+                        RESULTS_INFO++;
+                    }
+
 
                     //-----put data in tinyData-----//
                     tinyDB.remove("courseTitles");
                     tinyDB.remove("coursePercentages");
                     tinyDB.remove("courseListsSize");
 
+
                     tinyDB.putInt("courseListsSize", courseLists.size());
                     tinyDB.putListString("courseTitles", courseTitles);
                     tinyDB.putListString("coursePercentages", coursePercentages);
+
 
 
                 }
@@ -572,7 +619,9 @@ public class ActivityMain extends AppCompatActivity {
 
 
             } catch (Exception e) {
+                e.getStackTrace()[0].getLineNumber();
                 e.printStackTrace();
+                Toast.makeText(MyApplication.getAppContext(), "Error in parsing the data", Toast.LENGTH_LONG).show();
             }
 
             return null;
@@ -585,13 +634,13 @@ public class ActivityMain extends AppCompatActivity {
 
 
             try {
-                Toast.makeText(MyApplication.getAppContext(), "Data is updated", Toast.LENGTH_LONG).show();
+                Toast.makeText(MyApplication.getAppContext(), "Parsing is done", Toast.LENGTH_LONG).show();
                 mViewPager.getAdapter().notifyDataSetChanged();
                 FragmentCourses.adapterCourses.notifyDataSetChanged();
                 ActivityMain.setRefreshActionButtonState(false);
 
             } catch (Exception e) {
-                Toast.makeText(MyApplication.getAppContext(), "Error data is not updated", Toast.LENGTH_LONG).show();
+                Toast.makeText(MyApplication.getAppContext(), "Error in parsing the data", Toast.LENGTH_LONG).show();
             }
 
 

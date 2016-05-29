@@ -35,7 +35,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.72"
-            android:text="Say Hi!"
+            android:hint="Say Hi!"
             android:ems="10"
             android:maxHeight="80dp" />
 

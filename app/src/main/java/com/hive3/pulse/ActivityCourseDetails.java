@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.widget.ListView;
 import com.hive3.pulse.DataProviders.DPCourseDetails;
 import com.hive3.pulse.adapters.AdapterCourseDetails;
@@ -16,6 +17,8 @@ public class ActivityCourseDetails extends AppCompatActivity {
 
     ListView listView;
     AdapterCourseDetails adapter;
+
+    Intent intent;
 
 
     @Override
@@ -33,7 +36,7 @@ public class ActivityCourseDetails extends AppCompatActivity {
         assert getSupportActionBar() != null;
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        Intent intent = getIntent();
+        intent = getIntent();
 
         switch (intent.getIntExtra("course",0)){
             case 0:
@@ -121,20 +124,27 @@ public class ActivityCourseDetails extends AppCompatActivity {
 
 
 
-
+    //set adapter and add results
     public void setAdapter(ArrayList<String> course){
-        int i = 0;
 
-        for (String s : ActivityMain.tinyDB.getListString("course0")) {
-            while (ActivityMain.tinyDB.getListString("course0").size() != course.size()){
-                course.add("");
-            }
-            DPCourseDetails obj = new DPCourseDetails(s,course.get(i));
+        ArrayList<String>id = ActivityMain.tinyDB.getListString("course0");
+        ArrayList<String>resultsId = ActivityMain.tinyDB.getListString("courseResultsId"+intent.getIntExtra("course",0));
+        id.addAll(resultsId);
+        ArrayList<String>info = course;
+        ArrayList<String>resultsInfo = ActivityMain.tinyDB.getListString("courseResultsInfo"+intent.getIntExtra("course",0));
+        info.addAll(resultsInfo);
+
+        int i = 0;
+        for (String s : id) {
+
+            DPCourseDetails obj = new DPCourseDetails(s,info.get(i));
             adapter.add(obj);
             i++;
         }
 
+
     }
+
 
 
 

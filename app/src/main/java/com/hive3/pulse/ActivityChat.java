@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -68,8 +69,9 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
         msg_edittext = (EditText) findViewById(R.id.messageEditText);
         msg_edittext.setEnabled(false);
         msgListView = (ListView) findViewById(R.id.msgListView);
-        ImageButton sendButton = (ImageButton) findViewById(R.id.sendMessageButton);
+        final ImageButton sendButton = (ImageButton) findViewById(R.id.sendMessageButton);
         sendButton.setOnClickListener(this);
+        sendButton.setEnabled(false);
 
         // ----Set autoscroll of listview when a new message arrives----//
         msgListView.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
@@ -92,6 +94,7 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
 
         ParseQuery<ParseUser> searchQuery = ParseQuery.getUserQuery();
         searchQuery.whereMatches("status", "searching");
+        searchQuery.whereNotEqualTo("username",ParseUser.getCurrentUser().getUsername());
         searchQuery.findInBackground(new FindCallback<ParseUser>() {
             @Override
             public void done(final List<ParseUser> list, ParseException e) {
@@ -101,6 +104,7 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
                         Collections.shuffle(list);
 
                         msg_edittext.setEnabled(true);
+                        sendButton.setEnabled(true);
                         list.get(0).put("status", "active");
                         buddy = list.get(0).getUsername();
                         list.get(0).saveInBackground(new SaveCallback() {
@@ -117,10 +121,10 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
                             public void done(ParseException e) {
 
                                 if (e == null) {
-                                    Toast.makeText(getApplicationContext(), "Status is active", Toast.LENGTH_LONG).show();
+                                    //Toast.makeText(getApplicationContext(), "Connected", Toast.LENGTH_LONG).show();
 
                                 } else {
-                                    Toast.makeText(getApplicationContext(), "Error occured", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getApplicationContext(), "Error occurred", Toast.LENGTH_LONG).show();
 
                                 }
 
@@ -128,6 +132,7 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
                         });
                     } else {
                         msg_edittext.setEnabled(false);
+                        sendButton.setEnabled(false);
                     }
 
 
@@ -250,37 +255,40 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
 
         String messageSending = msg_edittext.getText().toString();
 
-
-//        ChatMessage message = new ChatMessage(CURRENT_USER,buddy,messageSending,MESSAGE_ID,true);
-//        chatList.add(message);
-        msg_edittext.setText("");
-
-
-        Conversation conversation = new Conversation();
-        conversation.setMsg(messageSending);
-        conversation.setDate(new Date());
-        conversation.setSender(CURRENT_USER);
-        conversation.setReceiver(buddy);
+        if (messageSending.trim().equals("")){
+            Toast.makeText(getApplicationContext(),"message should not be empty",Toast.LENGTH_LONG).show();
+        }else {
+            msg_edittext.setText("");
 
 
-        convList.add(conversation);
+            Conversation conversation = new Conversation();
+            conversation.setMsg(messageSending);
+            conversation.setDate(new Date());
+            conversation.setSender(CURRENT_USER);
+            conversation.setReceiver(buddy);
 
 
-        ParseObject po = new ParseObject("Chat");
-        po.put("sender", CURRENT_USER);
-        po.put("receiver", buddy);
-        // po.put("createdAt", "");
-        po.put("message", messageSending);
-        po.saveEventually(new SaveCallback() {
+            convList.add(conversation);
 
-            @Override
-            public void done(ParseException e) {
-                if (e == null) {
-                    chatAdapter.notifyDataSetChanged();
+
+            ParseObject po = new ParseObject("Chat");
+            po.put("sender", CURRENT_USER);
+            po.put("receiver", buddy);
+            // po.put("createdAt", "");
+            po.put("message", messageSending);
+            po.saveEventually(new SaveCallback() {
+
+                @Override
+                public void done(ParseException e) {
+                    if (e == null) {
+                        chatAdapter.notifyDataSetChanged();
+                    }
+
                 }
+            });
 
-            }
-        });
+        }
+
 
 
     }
@@ -337,6 +345,32 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
 
 
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        ParseQuery<ParseObject> q = ParseQuery.getQuery("Chat");
+        q.whereEqualTo("sender", CURRENT_USER);
+        q.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> list, ParseException e) {
+                if (list.size()>0){
+                    for (int i = 0; i < list.size(); i++) {
+                        ParseObject po = list.get(i);
+                        String objId = po.getObjectId();
+                        ParseObject.createWithoutData("Chat", objId).deleteEventually();
+
+                    }
+                }else {
+                    Log.e("update6","somethng is wrong");
+                }
+            }
+        });
+
+
+    }
+
 
 
 }

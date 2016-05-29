@@ -49,8 +49,6 @@ public class FragmentCourses extends Fragment {
             Log.e("courseTitles",courseTitles.toString());
             setCustomAdapter();
 
-        }else {
-            Toast.makeText(getContext(),"Something went wrong",Toast.LENGTH_LONG).show();
         }
 
 
