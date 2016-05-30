@@ -15,8 +15,7 @@ android {
         applicationId "com.hive3.pulse"
         minSdkVersion 19
         targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
+        versionName '1.2'
     }
     buildTypes {
         release {
@@ -24,6 +23,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.config
         }
+    }
+    productFlavors {
     }
 }
 
